@@ -1,12 +1,11 @@
-// src/controllers/userController.js
-import User from "../models/User.js";
+// src/controllers/userController.js ";
+import User from "../models/usermodel.js"
 
 const updateUserProfile = async (req, res) => {
   try {
     const { username, email } = req.body;
     const userId = req.user.id;
 
-    // Update user profile
     const updatedUser = await User.findByIdAndUpdate(
       userId,
       { username, email },
@@ -19,7 +18,7 @@ const updateUserProfile = async (req, res) => {
 
     res.json({ message: "Profile updated successfully", user: updatedUser });
   } catch (error) {
-    console.error(error);
+    console.error("Profile update error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

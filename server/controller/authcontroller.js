@@ -7,17 +7,16 @@ const signup = async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Input validation
-    if (!username || !email || !password) {
-      return res
-        .status(400)
-        .json({ message: "Please provide all required fields" });
+    // Check if user exists
+    let user = await User.findOne({ username });
+    if (user) {
+      return res.status(400).json({ message: "Username already taken" });
     }
 
-    // Check if user already exists
-    let user = await User.findOne({ email });
+    // Check if email exists
+    user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "Email already registered" });
     }
 
     // Create new user
@@ -27,8 +26,14 @@ const signup = async (req, res) => {
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (error) {
-    console.error("Signup error:", error); // Log detailed error
-    res.status(500).json({ message: "Server error during signup" });
+    console.error("Signup error:", error);
+
+    // Handle specific MongoDB duplicate key error
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.username) {
+      return res.status(400).json({ message: "Username already taken" });
+    }
+
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -36,10 +41,21 @@ const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    if (!email || !password) {
+      return res
+        .status(400)
+        .json({ message: "Email and password are required" });
+    }
+
     // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
+    }
+
+    // Ensure user.password is defined
+    if (!user.password) {
+      return res.status(500).json({ message: "User password is missing" });
     }
 
     // Validate password
@@ -55,7 +71,7 @@ const login = async (req, res) => {
 
     res.json({ token });
   } catch (error) {
-    console.error(error);
+    console.error("Login error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

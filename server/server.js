@@ -3,7 +3,10 @@ import express from "express";
 import connectDB from "./DB/const.js";
 import dotenv from "dotenv";
 import authRoutes from "./route/route.js";
-import userRoutes from "./route/userRoutes.js";
+import userRoutes from "./route/route.js"
+import postRoutes from "./route/route.js"
+import commentRoutes from "./route/route.js"
+import likeRoutes from "./route/route.js"
 
 import errorHandler from "./utils/errorHandler.js";
 
@@ -18,8 +21,10 @@ app.use(express.json());
 
 // Routes
 app.use("/api/auth", authRoutes);
-app.use("/api/user", userRoutes)
-    
+app.use("/api/user", userRoutes);
+app.use("/api/post", postRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/like", likeRoutes);
 
 
 // Error handler middleware
