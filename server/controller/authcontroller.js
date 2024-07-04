@@ -1,4 +1,4 @@
-// src/controllers/authController.js
+
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import User from "../models/usermodel.js";
@@ -77,9 +77,7 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  // In a JWT-based system, logout is handled client-side by clearing the token
-  // stored on the client (e.g., in local storage or cookies). Server-side does not
-  // maintain session state, so no action is needed here.
+
   res.json({ message: "Logout successful" });
 };
 

@@ -1,0 +1,32 @@
+import { createNotification } from './notificationController.js';
+
+const followUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const followId = req.params.followId;
+
+    const user = await User.findById(userId);
+    const followUser = await User.findById(followId);
+
+    if (!followUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.following.includes(followId)) {
+      return res.status(400).json({ message: "Already following this user" });
+    }
+
+    user.following.push(followId);
+    followUser.followers.push(userId);
+
+    await user.save();
+    await followUser.save();
+
+    await createNotification(followId, 'follow', `${user.username} started following you`);
+
+    res.json({ message: "User followed successfully" });
+  } catch (error) {
+    console.error("Error following user:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};

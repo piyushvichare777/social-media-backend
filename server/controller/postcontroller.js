@@ -1,4 +1,4 @@
-// src/controllers/postController.js
+
 import Post from "../models/postmodel.js";
 
 const createPost = async (req, res) => {

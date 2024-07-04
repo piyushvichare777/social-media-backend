@@ -1,4 +1,4 @@
-// src/controllers/userController.js ";
+
 import User from "../models/usermodel.js"
 
 const updateUserProfile = async (req, res) => {
